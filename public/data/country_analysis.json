@@ -1,0 +1,373 @@
+{
+  "countries": [
+    {
+      "name": "Australia",
+      "frequency": 656,
+      "percentage": 35.33,
+      "words": [
+        {
+          "zh": "澳洲",
+          "en": "Australia",
+          "frequency": 454
+        },
+        {
+          "zh": "悉尼",
+          "en": "Sydney",
+          "frequency": 92
+        },
+        {
+          "zh": "澳大利亚",
+          "en": "Australia",
+          "frequency": 56
+        },
+        {
+          "zh": "珀斯",
+          "en": "Perth",
+          "frequency": 22
+        },
+        {
+          "zh": "澳牛",
+          "en": "Australian cattle",
+          "frequency": 10
+        },
+        {
+          "zh": "Australian",
+          "en": "Australian",
+          "frequency": 6
+        },
+        {
+          "zh": "澳币",
+          "en": "Australian dollar",
+          "frequency": 4
+        },
+        {
+          "zh": "西澳",
+          "en": "Western Australia",
+          "frequency": 3
+        },
+        {
+          "zh": "澳洲人",
+          "en": "Australians",
+          "frequency": 2
+        },
+        {
+          "zh": "伯斯",
+          "en": "Perth",
+          "frequency": 2
+        },
+        {
+          "zh": "Perth",
+          "en": "Perth",
+          "frequency": 1
+        },
+        {
+          "zh": "澳州",
+          "en": "Australia",
+          "frequency": 1
+        },
+        {
+          "zh": "Australia",
+          "en": "Australia",
+          "frequency": 1
+        },
+        {
+          "zh": "对澳",
+          "en": "Australia",
+          "frequency": 1
+        },
+        {
+          "zh": "澳大利",
+          "en": "Australia",
+          "frequency": 1
+        }
+      ]
+    },
+    {
+      "name": "New Zealand",
+      "frequency": 295,
+      "percentage": 15.89,
+      "words": [
+        {
+          "zh": "新西兰",
+          "en": "New Zealand",
+          "frequency": 144
+        },
+        {
+          "zh": "奥克兰",
+          "en": "Auckland",
+          "frequency": 128
+        },
+        {
+          "zh": "基督城",
+          "en": "Christchurch",
+          "frequency": 11
+        },
+        {
+          "zh": "Auckland",
+          "en": "Auckland",
+          "frequency": 3
+        },
+        {
+          "zh": "纽币",
+          "en": "New Zealand Dollar",
+          "frequency": 3
+        },
+        {
+          "zh": "纽西兰",
+          "en": "New Zealand",
+          "frequency": 2
+        },
+        {
+          "zh": "奧克蘭",
+          "en": "Auckland",
+          "frequency": 2
+        },
+        {
+          "zh": "紐西蘭",
+          "en": "New Zealand",
+          "frequency": 1
+        },
+        {
+          "zh": "奥克兰市",
+          "en": "Auckland",
+          "frequency": 1
+        }
+      ]
+    },
+    {
+      "name": "China",
+      "frequency": 282,
+      "percentage": 15.19,
+      "words": [
+        {
+          "zh": "国内",
+          "en": "domestic",
+          "frequency": 85
+        },
+        {
+          "zh": "中国",
+          "en": "China",
+          "frequency": 73
+        },
+        {
+          "zh": "国产",
+          "en": "Domestic",
+          "frequency": 65
+        },
+        {
+          "zh": "本地",
+          "en": "local",
+          "frequency": 39
+        },
+        {
+          "zh": "上海",
+          "en": "Shanghai",
+          "frequency": 16
+        },
+        {
+          "zh": "北京",
+          "en": "Beijing",
+          "frequency": 3
+        },
+        {
+          "zh": "中國養",
+          "en": "China",
+          "frequency": 1
+        }
+      ]
+    },
+    {
+      "name": "Japan",
+      "frequency": 189,
+      "percentage": 10.18,
+      "words": [
+        {
+          "zh": "日本",
+          "en": "Japan",
+          "frequency": 172
+        },
+        {
+          "zh": "日式",
+          "en": "Japanese",
+          "frequency": 14
+        },
+        {
+          "zh": "日本产",
+          "en": "Made in Japan",
+          "frequency": 2
+        },
+        {
+          "zh": "Japanese",
+          "en": "Japanese",
+          "frequency": 1
+        }
+      ]
+    },
+    {
+      "name": "United States",
+      "frequency": 124,
+      "percentage": 6.68,
+      "words": [
+        {
+          "zh": "美国",
+          "en": "USA",
+          "frequency": 116
+        },
+        {
+          "zh": "美国进口",
+          "en": "Imports from the United States",
+          "frequency": 5
+        },
+        {
+          "zh": "美国农业部",
+          "en": "USDA",
+          "frequency": 3
+        }
+      ]
+    },
+    {
+      "name": "Singapore",
+      "frequency": 54,
+      "percentage": 2.91,
+      "words": [
+        {
+          "zh": "新加坡",
+          "en": "Singapore",
+          "frequency": 54
+        }
+      ]
+    },
+    {
+      "name": "Brazil",
+      "frequency": 44,
+      "percentage": 2.37,
+      "words": [
+        {
+          "zh": "巴西",
+          "en": "Brazil",
+          "frequency": 44
+        }
+      ]
+    },
+    {
+      "name": "Argentina",
+      "frequency": 40,
+      "percentage": 2.15,
+      "words": [
+        {
+          "zh": "阿根廷",
+          "en": "Argentina",
+          "frequency": 39
+        },
+        {
+          "zh": "Argentina",
+          "en": "Argentina",
+          "frequency": 1
+        }
+      ]
+    },
+    {
+      "name": "South Korea",
+      "frequency": 32,
+      "percentage": 1.72,
+      "words": [
+        {
+          "zh": "韩国",
+          "en": "South Korea",
+          "frequency": 32
+        }
+      ]
+    },
+    {
+      "name": "United Kingdom",
+      "frequency": 24,
+      "percentage": 1.29,
+      "words": [
+        {
+          "zh": "英国",
+          "en": "U.K.",
+          "frequency": 24
+        }
+      ]
+    },
+    {
+      "name": "Malaysia",
+      "frequency": 24,
+      "percentage": 1.29,
+      "words": [
+        {
+          "zh": "马来西亚",
+          "en": "Malaysia",
+          "frequency": 23
+        },
+        {
+          "zh": "Malaysia",
+          "en": "Malaysia",
+          "frequency": 1
+        }
+      ]
+    },
+    {
+      "name": "Spain",
+      "frequency": 23,
+      "percentage": 1.24,
+      "words": [
+        {
+          "zh": "西班牙",
+          "en": "Spain",
+          "frequency": 23
+        }
+      ]
+    },
+    {
+      "name": "Chile",
+      "frequency": 20,
+      "percentage": 1.08,
+      "words": [
+        {
+          "zh": "智利",
+          "en": "Chile",
+          "frequency": 20
+        }
+      ]
+    },
+    {
+      "name": "Hong Kong",
+      "frequency": 20,
+      "percentage": 1.08,
+      "words": [
+        {
+          "zh": "香港",
+          "en": "Hongkong",
+          "frequency": 20
+        }
+      ]
+    },
+    {
+      "name": "Switzerland",
+      "frequency": 16,
+      "percentage": 0.86,
+      "words": [
+        {
+          "zh": "瑞士",
+          "en": "Switzerland",
+          "frequency": 16
+        }
+      ]
+    },
+    {
+      "name": "Russia",
+      "frequency": 14,
+      "percentage": 0.75,
+      "words": [
+        {
+          "zh": "俄罗斯",
+          "en": "Russia",
+          "frequency": 14
+        }
+      ]
+    }
+  ],
+  "total_mentions": 1857,
+  "unique_countries": 16
+}
