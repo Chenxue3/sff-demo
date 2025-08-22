@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Button } from "../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
 
-import { Link, MapPin, Ship, Clock,  Leaf, Heart } from "lucide-react"
+import { MapPin, Ship, Clock,  Leaf, Heart } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
 // Google Maps types
