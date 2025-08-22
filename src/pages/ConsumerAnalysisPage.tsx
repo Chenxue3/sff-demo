@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/button"
 import { Link } from 'react-router-dom'
@@ -57,6 +57,7 @@ export default function ConsumerAnalysisPage() {
   const [originData, setOriginData] = useState<OriginAnalysisData | null>(null)
   const [originLoading, setOriginLoading] = useState(false)
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null)
+  const detailsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -134,6 +135,18 @@ export default function ConsumerAnalysisPage() {
       .sort((a, b) => b.frequency - a.frequency)
       .slice(0, 50)
   }, [activeLabel, visibleData])
+
+  // Auto-scroll to details on mobile when category is selected
+  useEffect(() => {
+    if (activeLabel && detailsRef.current && window.innerWidth < 768) {
+      setTimeout(() => {
+        detailsRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        })
+      }, 100)
+    }
+  }, [activeLabel])
 
   // Top 100 by frequency with optional label filter
   const top100Base = useMemo(() => {
@@ -217,9 +230,9 @@ export default function ConsumerAnalysisPage() {
         )}
 
         {!loading && !error && activeTab==='categories' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {/* Left: Label ranking */}
-            <Card className="lg:col-span-1">
+            <Card className="md:col-span-2 lg:col-span-1">
               <CardHeader>
                 <CardTitle className="text-primary">Top Categories</CardTitle>
               </CardHeader>
@@ -245,7 +258,7 @@ export default function ConsumerAnalysisPage() {
             </Card>
 
             {/* Right: Active label details */}
-            <Card className="lg:col-span-2">
+            <Card className="md:col-span-2 lg:col-span-2" ref={detailsRef}>
               <CardHeader>
                 <CardTitle className="text-primary">
                   {activeLabel ? `Top words: ${activeLabel}` : 'Select a category to explore'}
@@ -274,9 +287,9 @@ export default function ConsumerAnalysisPage() {
         )}
 
         {!loading && !error && activeTab==='top100' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {/* Left: label filter for top100 */}
-            <Card className="lg:col-span-1">
+            <Card className="md:col-span-2 lg:col-span-1">
               <CardHeader>
                 <CardTitle className="text-primary">Filter Top 100 by Category</CardTitle>
               </CardHeader>
@@ -307,7 +320,7 @@ export default function ConsumerAnalysisPage() {
             </Card>
 
             {/* Right: top100 list */}
-            <Card className="lg:col-span-2">
+            <Card className="md:col-span-2 lg:col-span-2">
               <CardHeader>
                 <CardTitle className="text-primary">Top 100 Words by Frequency</CardTitle>
               </CardHeader>
@@ -376,8 +389,8 @@ export default function ConsumerAnalysisPage() {
                   <div className="text-center text-muted-foreground py-8">Failed to load chart data</div>
                 )}
                 {originData && chartData.length > 0 && (
-                  <div className="w-full flex justify-center">
-                    <ChartContainer config={chartConfig} className="h-[300px] sm:h-[350px] md:h-[400px] lg:h-[450px] w-full max-w-2xl">
+                  <div className="w-full">
+                    <ChartContainer config={chartConfig} className="h-[300px] sm:h-[350px] md:h-[400px] lg:h-[450px] w-full max-w-2xl mx-auto">
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                           <Pie
@@ -385,7 +398,7 @@ export default function ConsumerAnalysisPage() {
                             cx="50%"
                             cy="50%"
                             labelLine={false}
-                            label={({ name, percentage }) => `${name} ${percentage}%`}
+                            label={false}
                             outerRadius="70%"
                             innerRadius="30%"
                             fill="#8884d8"
@@ -405,6 +418,20 @@ export default function ConsumerAnalysisPage() {
                         </PieChart>
                       </ResponsiveContainer>
                     </ChartContainer>
+                    
+                    {/* Legend below the chart */}
+                    <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 max-w-2xl mx-auto">
+                      {chartData.map((entry, index) => (
+                        <div key={index} className="flex items-center gap-2 text-sm">
+                          <div 
+                            className="w-3 h-3 rounded-full flex-shrink-0" 
+                            style={{ backgroundColor: entry.fill }}
+                          />
+                          <span className="truncate font-medium">{entry.name}</span>
+                          <span className="text-muted-foreground text-xs">({entry.percentage}%)</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </CardContent>

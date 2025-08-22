@@ -159,11 +159,27 @@ export default function TraceabilityPage() {
 
     // Load Google Maps API
     if (!window.google) {
+      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg'
       const script = document.createElement('script')
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&libraries=geometry&language=en`
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=geometry&language=en&v=weekly`
       script.async = true
       script.defer = true
       script.onload = initMap
+      script.onerror = () => {
+        console.error('Failed to load Google Maps API')
+        // Fallback: show a message instead of the map
+        if (mapRef.current) {
+          mapRef.current.innerHTML = `
+            <div class="flex items-center justify-center h-full bg-muted/20 rounded-lg">
+              <div class="text-center p-6">
+            <div class="text-2xl mb-2">🗺️</div>
+            <p class="text-muted-foreground">Interactive map temporarily unavailable</p>
+            <p class="text-sm text-muted-foreground mt-2">Please check back later</p>
+          </div>
+        </div>
+      `
+        }
+      }
       document.head.appendChild(script)
     } else {
       initMap()
