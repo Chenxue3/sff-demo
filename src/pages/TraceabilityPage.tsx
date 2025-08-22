@@ -212,7 +212,6 @@ export default function TraceabilityPage() {
         const map = mapInstanceRef.current
         
         // Smooth pan and zoom animation with easing
-        const currentCenter = map.getCenter()
         const targetCenter = step.coordinates
         
         // Calculate zoom level based on step type
@@ -221,14 +220,6 @@ export default function TraceabilityPage() {
         else if (index === 1) targetZoom = 5 // Port - medium zoom  
         else if (index === 2) targetZoom = 3 // Ocean - wider view
         else if (index === 3) targetZoom = 6 // Destination - closer zoom
-        
-        // Smooth pan with easing
-        const panOptions = {
-          center: targetCenter,
-          zoom: targetZoom,
-          duration: 1000,
-          easing: 'easeInOutCubic'
-        }
         
         // Use Google Maps panTo with smooth animation
         map.panTo(targetCenter)
