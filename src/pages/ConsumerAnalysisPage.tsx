@@ -98,7 +98,7 @@ export default function ConsumerAnalysisPage() {
 
   const chartData = useMemo(() => {
     if (!originData) return []
-    const colors = ["#85BEDC", "#3A383F", "#A6B0BB", "#CCBBCD", "#647588", "#9BB5D4", "#5A6B7A", "#B8C5D1", "#D4C1D9", "#7A8B9C"]
+    const colors = ["#85BEDC", "#CABEE9", "#A6B0BB", "#CCBBCD", "#647588", "#070604", "#F9E211", "#797A87", "#A8ACAD", "#D6CBB5"]
     return originData.countries.slice(0, 10).map((country, index) => ({
       name: country.name,
       frequency: country.frequency,
@@ -176,8 +176,9 @@ export default function ConsumerAnalysisPage() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border/40 bg-background/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-4 flex flex-wrap items-center justify-center space-between gap-2">
           <h1 className="text-xl font-semibold text-primary">Consumer Demand Analysis</h1>
+          
           <div className="flex items-center gap-3">
             <Button asChild variant="outline">
               <Link to="/">Back Home</Link>
@@ -195,10 +196,22 @@ export default function ConsumerAnalysisPage() {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             When Chinese consumers choose imported beef, they're not comparing brands - they're comparing countries. Australia leads, but New Zealand has unique advantages.
           </p>
+          {/* divider */}
+          <div className="w-full h-[1px] bg-border my-10"></div>
+          <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
+            Click the tabs below to explore the data.
+          </p>
         </section>
 
         {/* Tabs */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-center gap-2">
+        <Button
+            variant={activeTab==='origins' ? 'default' : 'outline'}
+            onClick={() => setActiveTab('origins')}
+            size="sm"
+          >
+            Origin Analysis
+          </Button>
           <Button
             variant={activeTab==='categories' ? 'default' : 'outline'}
             onClick={() => setActiveTab('categories')}
@@ -213,13 +226,7 @@ export default function ConsumerAnalysisPage() {
           >
             Top 100 Words
           </Button>
-          <Button
-            variant={activeTab==='origins' ? 'default' : 'outline'}
-            onClick={() => setActiveTab('origins')}
-            size="sm"
-          >
-            Origin Analysis
-          </Button>
+          
         </div>
 
         {loading && (
@@ -266,7 +273,7 @@ export default function ConsumerAnalysisPage() {
               </CardHeader>
               <CardContent>
                 {!activeLabel && (
-                  <div className="text-sm text-muted-foreground">Pick a category on the left to see top words and frequencies.</div>
+                  <div className="text-sm text-muted-foreground">Pick a category to see top words and frequencies.</div>
                 )}
                 {activeLabel && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -420,7 +427,7 @@ export default function ConsumerAnalysisPage() {
                     </ChartContainer>
                     
                     {/* Legend below the chart */}
-                    <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 max-w-2xl mx-auto">
+                    <div className="flex flex-wrap gap-2">
                       {chartData.map((entry, index) => (
                         <div key={index} className="flex items-center gap-2 text-sm">
                           <div 
@@ -473,7 +480,7 @@ export default function ConsumerAnalysisPage() {
                               </div>
                             </div>
                             
-                            <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                            <div className="h-2 bg-secondary/30 rounded-full overflow-hidden">
                               <div 
                                 className="h-full bg-primary transition-all duration-500 ease-out"
                                 style={{ width: `${(country.frequency / maxFreq) * 100}%` }}

@@ -37,8 +37,11 @@ interface JourneyStep {
 
 export default function TraceabilityPage() {
   const mapRef = useRef<HTMLDivElement>(null)
-  const [_, setMap] = useState<any>(null)
-  const [polyline, setPolyline] = useState<any>(null)
+  const mapInstanceRef = useRef<any>(null)
+  const basePolylineRef = useRef<any>(null)
+  const highlightPolylineRef = useRef<any>(null)
+  const stepMarkersRef = useRef<any[]>([])
+  const [activeStepIndex, setActiveStepIndex] = useState<number | null>(null)
   const navigate = useNavigate()
 
   // Farm information
@@ -109,48 +112,52 @@ export default function TraceabilityPage() {
           mapTypeId: "terrain"
         })
 
-        setMap(mapInstance)
+        mapInstanceRef.current = mapInstance
 
         // Create polyline for the journey
-        const flightPlanCoordinates = [
-          { lat: -45.8788, lng: 170.5028 }, // Dunedin
-          { lat: -45.8167, lng: 170.6167 }, // Port of Otago
-          { lat: -20.0000, lng: 160.0000 }, // Pacific Ocean
-          { lat: 31.2304, lng: 121.4737 },  // Shanghai
-        ]
+        const flightPlanCoordinates = journeySteps.map(s => ({ lat: s.coordinates.lat, lng: s.coordinates.lng }))
 
-        const polylineInstance = new (window.google as any).maps.Polyline({
+        // Base path
+        const basePolyline = new (window.google as any).maps.Polyline({
           path: flightPlanCoordinates,
+          geodesic: true,
+          strokeColor: "#94A3B8",
+          strokeOpacity: 0.6,
+          strokeWeight: 3,
+        })
+        basePolyline.setMap(mapInstance)
+        basePolylineRef.current = basePolyline
+
+        // Highlighted path (dynamic)
+        const highlightPolyline = new (window.google as any).maps.Polyline({
+          path: [],
           geodesic: true,
           strokeColor: "#FF6B35",
           strokeOpacity: 1.0,
           strokeWeight: 4,
         })
-
-        polylineInstance.setMap(mapInstance)
-        setPolyline(polylineInstance)
+        highlightPolyline.setMap(mapInstance)
+        highlightPolylineRef.current = highlightPolyline
 
         // Add markers for key points
-        const markers = [
-          {
-            position: { lat: -45.8788, lng: 170.5028 },
-            title: "Dunedin Farm",
-            icon: "🏔️"
-          },
-          {
-            position: { lat: 31.2304, lng: 121.4737 },
-            title: "Shanghai Destination", 
-            icon: "🏙️"
-          }
-        ]
-
-        markers.forEach(markerData => {
-          new (window.google as any).maps.Marker({
-            position: markerData.position,
+        stepMarkersRef.current = []
+        journeySteps.forEach((step, idx) => {
+          const marker = new (window.google as any).maps.Marker({
+            position: step.coordinates,
             map: mapInstance,
-            title: markerData.title,
-            label: markerData.icon
+            title: `${idx + 1}. ${step.title} - ${step.location}`,
+            label: { text: String(idx + 1), color: "#ffffff" },
+            icon: {
+              path: (window.google as any).maps.SymbolPath.CIRCLE,
+              fillColor: "#0EA5E9",
+              fillOpacity: 0.9,
+              strokeColor: "#0EA5E9",
+              strokeWeight: 1,
+              scale: 6
+            }
           })
+          marker.addListener('click', () => handleSelectStep(idx))
+          stepMarkersRef.current.push(marker)
         })
       } catch (error) {
         console.error('Error initializing map:', error)
@@ -186,10 +193,114 @@ export default function TraceabilityPage() {
     }
 
     return () => {
-      if (polyline) {
-        polyline.setMap(null)
+      if (basePolylineRef.current) basePolylineRef.current.setMap(null)
+      if (highlightPolylineRef.current) highlightPolylineRef.current.setMap(null)
+      if (stepMarkersRef.current?.length) {
+        stepMarkersRef.current.forEach(m => m.setMap(null))
+        stepMarkersRef.current = { current: [] } as any
       }
     }
+  }, [])
+
+  // Handle selecting a step from the timeline or marker
+  const handleSelectStep = (index: number) => {
+    try {
+      setActiveStepIndex(index)
+      const step = journeySteps[index]
+      
+      if (mapInstanceRef.current && step) {
+        const map = mapInstanceRef.current
+        
+        // Smooth pan and zoom animation with easing
+        const currentCenter = map.getCenter()
+        const targetCenter = step.coordinates
+        
+        // Calculate zoom level based on step type
+        let targetZoom = 5
+        if (index === 0) targetZoom = 6 // Farm - closer zoom
+        else if (index === 1) targetZoom = 5 // Port - medium zoom  
+        else if (index === 2) targetZoom = 3 // Ocean - wider view
+        else if (index === 3) targetZoom = 6 // Destination - closer zoom
+        
+        // Smooth pan with easing
+        const panOptions = {
+          center: targetCenter,
+          zoom: targetZoom,
+          duration: 1000,
+          easing: 'easeInOutCubic'
+        }
+        
+        // Use Google Maps panTo with smooth animation
+        map.panTo(targetCenter)
+        map.setZoom(targetZoom)
+      }
+
+      // Animate polyline path progressively
+      const coords = journeySteps.map(s => ({ lat: s.coordinates.lat, lng: s.coordinates.lng }))
+      if (highlightPolylineRef.current) {
+        const path = coords.slice(0, index + 1)
+        highlightPolylineRef.current.setPath(path)
+        
+        // Add a brief flash effect to the polyline
+        highlightPolylineRef.current.setOptions({
+          strokeOpacity: 1.0,
+          strokeWeight: 5
+        })
+        setTimeout(() => {
+          if (highlightPolylineRef.current) {
+            highlightPolylineRef.current.setOptions({
+              strokeOpacity: 0.8,
+              strokeWeight: 4
+            })
+          }
+        }, 300)
+      }
+
+      // Enhanced marker animation
+      stepMarkersRef.current?.forEach((marker, idx) => {
+        if (marker && (window.google as any)?.maps?.Animation) {
+          if (idx === index) {
+            // Active marker: bounce animation
+            marker.setAnimation((window.google as any).maps.Animation.BOUNCE)
+            setTimeout(() => marker.setAnimation(null), 1500)
+            
+            // Update marker appearance for active state
+            marker.setIcon({
+              path: (window.google as any).maps.SymbolPath.CIRCLE,
+              fillColor: "#FF6B35",
+              fillOpacity: 1.0,
+              strokeColor: "#FF6B35", 
+              strokeWeight: 2,
+              scale: 8
+            })
+          } else {
+            // Inactive markers: subtle scale down
+            marker.setIcon({
+              path: (window.google as any).maps.SymbolPath.CIRCLE,
+              fillColor: "#0EA5E9",
+              fillOpacity: 0.6,
+              strokeColor: "#0EA5E9",
+              strokeWeight: 1,
+              scale: 5
+            })
+          }
+        }
+      })
+      
+    } catch (e) {
+      console.error('Error in handleSelectStep:', e)
+    }
+  }
+
+  // Auto-select first step on mount with delay for better UX
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (mapInstanceRef.current && journeySteps.length > 0) {
+        handleSelectStep(0)
+      }
+    }, 800)
+    
+    return () => clearTimeout(timer)
   }, [])
 
   return (
@@ -224,25 +335,89 @@ export default function TraceabilityPage() {
           </p>
         </section>
 
-        {/* Journey Map */}
+        {/* Map + Timeline side by side on desktop, stacked on mobile */}
         <section className="mb-12">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-primary flex items-center gap-2">
-                <MapPin className="w-5 h-5" />
-                Journey Map
-              </CardTitle>
-              <CardDescription>
-                Interactive map showing the complete journey from farm to destination
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div 
-                ref={mapRef} 
-                className="w-full h-[400px] md:h-[500px] rounded-lg border"
-              />
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+            {/* Journey Map */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-primary flex items-center gap-2">
+                  <MapPin className="w-5 h-5" />
+                  Journey Map
+                </CardTitle>
+                <CardDescription>
+                  Interactive map showing the complete journey from farm to destination
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div 
+                  ref={mapRef} 
+                  className="w-full h-[320px] sm:h-[380px] md:h-[460px] lg:h-[520px] rounded-lg border transition-all duration-500 hover:shadow-xl hover:scale-[1.01] transform"
+                />
+              </CardContent>
+            </Card>
+
+            {/* Journey Timeline */}
+            <Card className="relative overflow-hidden">
+              <CardHeader>
+                <CardTitle className="text-primary flex items-center gap-2">
+                  <Clock className="w-5 h-5" />
+                  Journey Timeline
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="relative pl-6 md:pl-8">
+                  <div className="absolute left-3 md:left-4 top-0 bottom-0 w-px bg-border animate-pulse opacity-60 z-0" />
+                  <div className="space-y-4">
+                    {journeySteps.map((step, index) => (
+                      <div key={step.id} className="relative">
+                        <div className="absolute -left-0.5 md:-left-[3px] top-2 z-10">
+                          <div className={`w-6 h-6 md:w-7 md:h-7 rounded-full bg-background  flex items-center justify-center transition-all duration-300 ${activeStepIndex===index ? 'border-accent text-accent scale-110 shadow-lg' : 'border-border text-primary hover:scale-105'}`}>
+                            <div className={`w-2 h-2 rounded-full transition-all duration-300 ${activeStepIndex===index ? 'bg-accent scale-125' : 'bg-primary'}`} />
+                            {activeStepIndex === index && (
+                              <div className="absolute inset-0 rounded-full bg-accent/20 animate-ping" />
+                            )}
+                          </div>
+                        </div>
+                        <div className="ml-2 md:ml-4 relative z-0">
+                          <button 
+                            onClick={() => handleSelectStep(index)} 
+                            className={`w-full text-left rounded-lg border p-3 md:p-4 bg-background/60 backdrop-blur-sm transition-all duration-500 transform ${activeStepIndex===index ? 'border-accent bg-accent/5 scale-[1.02] shadow-lg' : 'hover:bg-accent/5 hover:scale-[1.01] hover:shadow-md active:scale-[0.98]'} border-l-0 focus:outline-none`}
+                          >
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-primary transition-transform duration-300 hover:scale-110">
+                                  {step.icon}
+                                </div>
+                                <h3 className={`font-semibold transition-colors duration-300 ${activeStepIndex===index ? 'text-accent' : 'text-primary'}`}>
+                                  {index + 1}. {step.title}
+                                </h3>
+                              </div>
+                              <span className={`px-2 py-1  text-xs rounded-md whitespace-nowrap transition-all duration-300 ${activeStepIndex===index ? 'bg-accent/20 border-accent text-accent' : 'border-border hover:bg-accent/10 hover:border-accent'}`}>
+                                {step.duration}
+                              </span>
+                            </div>
+                            <p className={`text-sm mb-1 transition-colors duration-300 ${activeStepIndex===index ? 'text-accent/80' : 'text-muted-foreground'}`}>{step.description}</p>
+                            <p className={`text-xs transition-colors duration-300 ${activeStepIndex===index ? 'text-accent' : 'text-primary'}`}>{step.location}</p>
+                            {step.details?.length > 0 && (
+                              <div className="mt-2 flex flex-wrap gap-2">
+                                {step.details.map((d, i) => (
+                                  <span key={i} className="px-2 py-0.5 rounded-md text-xs  transition-all duration-200 hover:bg-accent/5 hover:border-accent/50">{d}</span>
+                                ))}
+                              </div>
+                            )}
+                          </button>
+                        </div>
+                        {index !== journeySteps.length - 1 && (
+                          <div className={`absolute left-3 md:left-4 top-[2.25rem] w-px transition-all duration-500 z-0 ${activeStepIndex === index ? 'bg-accent' : 'bg-border'}`} style={{ height: 'calc(100% - 2.25rem)' }} />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </section>
 
         {/* Farm Information */}
@@ -297,38 +472,6 @@ export default function TraceabilityPage() {
           </Card>
         </section>
 
-        {/* Journey Timeline */}
-        <section className="mb-12">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-primary flex items-center gap-2">
-                <Clock className="w-5 h-5" />
-                Journey Timeline
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-2 gap-4">
-                {journeySteps.map((step) => (
-                  <div key={step.id} className="flex items-center gap-3 p-3 border rounded-lg">
-                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-                      {step.icon}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-primary">{step.title}</h3>
-                        <span className="px-2 py-1 border border-border text-xs rounded-md">
-                          {step.duration}
-                        </span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{step.description}</p>
-                      <p className="text-xs text-primary">{step.location}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </section>
 
 
 
@@ -351,3 +494,4 @@ export default function TraceabilityPage() {
     </div>
   )
 }
+
