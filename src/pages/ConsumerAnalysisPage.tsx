@@ -607,8 +607,6 @@ export default function ConsumerAnalysisPage() {
       <footer className="border-t border-border/40 bg-background/80 backdrop-blur-sm mt-16">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center text-sm text-muted-foreground">
-            <p>Creating goodness from the farms the world needs. We are Silver Fern Farms.</p>
-            <p className="mt-2">© 2025 Silver Fern Farms. All rights reserved.</p>
             <div className="mt-4 pt-4 border-t border-border/20">
               <p className="text-xs">
                 Demo created by <a href="https://chenxue3.github.io" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Zoea</a> for GradConnect Days
