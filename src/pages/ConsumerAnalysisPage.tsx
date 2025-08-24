@@ -176,8 +176,8 @@ export default function ConsumerAnalysisPage() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border/40 bg-background/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex flex-wrap items-center justify-center space-between gap-2">
-          <h1 className="text-xl font-semibold text-primary">Consumer Demand Analysis</h1>
+        <div className="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-2">
+          <h1 className="text-xl font-semibold text-primary">Consumer Analysis</h1>
           
           <div className="flex items-center gap-3">
             <Button asChild variant="outline">
@@ -202,6 +202,8 @@ export default function ConsumerAnalysisPage() {
             Click the tabs below to explore the data.
           </p>
         </section>
+
+      
 
         {/* Tabs */}
         <div className="flex flex-wrap items-center justify-center gap-2">
@@ -575,6 +577,31 @@ export default function ConsumerAnalysisPage() {
           </div>
         )}
       </main>
+        {/* Data Source Information */}
+        <section className="mb-8">
+          <Card className="bg-muted/30 border-dashed">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-3">
+                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-medium mt-0.5">
+                  ℹ️
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-primary mb-2">Data Source & Methodology</h3>
+                  <div className="text-sm text-muted-foreground space-y-2">
+                    <p>
+                      This analysis is based on posts and comments from Xiaohongshu/RedNote (小红书) discussing "imported beef" (进口牛肉). The original data is in Chinese, and I uesd Google Translate API to translate it to English, it may cause some potential translation errors/confusions.
+                      Due to platform restrictions requiring login for search functionality, the data collection was performed using an account registered in New Zealand.
+                    </p>
+                    <p className="text-amber-600 dark:text-amber-400">
+                      <strong>Note:</strong> The New Zealand-based account may have resulted in a higher proportion of Oceania-related content appearing in search results, 
+                      potentially introducing geographical bias in the data distribution.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
 
       {/* Footer */}
       <footer className="border-t border-border/40 bg-background/80 backdrop-blur-sm mt-16">
