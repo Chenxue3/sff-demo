@@ -47,9 +47,9 @@ export default function TraceabilityPage() {
   // Farm information
   const farmData: FarmInfo = {
     id: "farm-001",
-    name: "Southern Cross Farm",
+    name: "Silver Fern Farms",
     location: "Dunedin, South Island, New Zealand",
-    farmer: "Sarah & Michael Thompson",
+    farmer: "Micheal",
     story: "Our family has been farming this land for three generations. We believe in sustainable practices that respect both the animals and the environment. Our cattle graze freely on lush pastures, ensuring the highest quality beef while maintaining the natural ecosystem.",
     practices: ["Grass-fed", "Free-range", "Sustainable farming", "Animal welfare focused"],
     certifications: ["NZ Beef + Lamb Quality Mark", "Organic Certification", "Animal Welfare Approved"],
